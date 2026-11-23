@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#16234b">
+<title>Tarlac Rice Watch</title>
+<style>
+:root{--navy:#16234b;--blue:#2855b7;--gold:#f4bd50;--cream:#f7f4ec;--ink:#20283a;--muted:#68738a;--line:#e4e8f0}
+*{box-sizing:border-box}body{margin:0;background:var(--cream);color:var(--ink);font-family:Arial,Helvetica,sans-serif}
+header{background:var(--navy);color:#fff;padding:17px 20px}.wrap{max-width:1050px;margin:auto}
+.brand{font-weight:900;letter-spacing:1px;font-size:19px}.brand span{color:var(--gold)}
+.hero{background:linear-gradient(120deg,#16234b,#2855b7);color:white;padding:38px 20px 60px}
+.hero h1{font-size:clamp(30px,5vw,48px);margin:0 0 10px}.hero p{color:#e0e9ff;line-height:1.6;margin:0;max-width:650px}
+main{max-width:1050px;margin:-28px auto 40px;padding:0 16px;position:relative}
+.panel{background:white;border:1px solid var(--line);border-radius:18px;padding:22px;margin-bottom:18px;box-shadow:0 10px 30px #16234b12}
+h2{margin:0 0 7px;color:var(--navy);font-size:21px}.sub{color:var(--muted);font-size:13px;margin:0 0 17px;line-height:1.5}
+label{display:block;font-size:13px;font-weight:800;margin:0 0 8px;color:var(--navy)}
+select{width:100%;height:52px;border:2px solid #cbd5e1;border-radius:12px;background:#fff;padding:0 14px;font-size:16px;color:#172554;font-weight:700}
+select:focus{outline:3px solid #93c5fd}
+.selected{display:inline-block;background:#e8efff;color:#173575;border-radius:20px;padding:8px 13px;font-weight:800;font-size:13px;margin:0 0 15px}
+.prices{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.price-card{border:1px solid var(--line);border-radius:14px;padding:16px;background:#fbfcff}
+.icon{font-size:22px;margin-bottom:10px}.kind{font-size:12px;color:var(--muted);font-weight:700;min-height:30px}
+.amount{font-size:27px;color:var(--navy);font-weight:900;margin:7px 0 2px}.unit{font-size:11px;color:var(--muted)}
+.notice{background:#fff7e6;border:1px solid #f3d99e;color:#735315;border-radius:12px;padding:12px 14px;font-size:12px;line-height:1.55;margin-top:16px}
+.locations{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:12px}
+.loc-btn{border:1px solid #d8deea;background:#fff;border-radius:10px;padding:10px 6px;font-weight:700;font-size:12px;color:#24345e;cursor:pointer}
+.loc-btn.active,.loc-btn:hover{background:var(--navy);border-color:var(--navy);color:white}
+.table-scroll{overflow-x:auto}table{width:100%;border-collapse:collapse;min-width:460px}th,td{padding:11px 9px;border-bottom:1px solid var(--line);font-size:12px;text-align:right}th:first-child,td:first-child{text-align:left}th{color:var(--muted);font-size:10px;text-transform:uppercase}
+.search{width:100%;height:45px;border:1px solid #cbd5e1;border-radius:10px;padding:0 12px;margin:8px 0 14px;font-size:14px}
+footer{background:var(--navy);color:#dbe5ff;padding:24px 18px;font-size:12px;line-height:1.6}
+@media(max-width:750px){.prices{grid-template-columns:repeat(2,1fr)}.locations{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:430px){.panel{padding:16px}.amount{font-size:24px}.locations{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<header><div class="wrap brand">🌾 TARLAC <span>RICE WATCH</span></div></header>
+<section class="hero"><div class="wrap"><h1>Rice prices across Tarlac.</h1><p>Select your city or municipality below to view the estimated price of each rice variety per kilogram.</p></div></section>
+<main>
+<section class="panel">
+<h2>Choose your municipality</h2>
+<p class="sub">Use this dropdown to select any of the 18 locations in Tarlac Province.</p>
+<label for="municipality">SELECT CITY / MUNICIPALITY</label>
+<select id="municipality" onchange="updatePrices()">
+<option value="Tarlac City">Tarlac City</option>
+<option value="Anao">Anao</option><option value="Bamban">Bamban</option>
+<option value="Camiling">Camiling</option><option value="Capas">Capas</option>
+<option value="Concepcion">Concepcion</option><option value="Gerona">Gerona</option>
+<option value="La Paz">La Paz</option><option value="Mayantoc">Mayantoc</option>
+<option value="Moncada">Moncada</option><option value="Paniqui">Paniqui</option>
+<option value="Pura">Pura</option><option value="Ramos">Ramos</option>
+<option value="San Clemente">San Clemente</option><option value="San Jose">San Jose</option>
+<option value="San Manuel">San Manuel</option><option value="Santa Ignacia">Santa Ignacia</option>
+<option value="Victoria">Victoria</option>
+</select>
+</section>
+<section class="panel" id="rice-prices">
+<h2>Rice price list</h2>
+<p class="sub">Estimated retail price for the selected location.</p>
+<div class="selected" id="place-name">Tarlac City</div>
+<div class="prices" id="price-cards">
+<div class="price-card"><div class="icon">🌾</div><div class="kind">Regular-milled rice</div><div class="amount">₱45.00</div><div class="unit">per kilogram</div></div>
+<div class="price-card"><div class="icon">🍚</div><div class="kind">Well-milled rice</div><div class="amount">₱52.00</div><div class="unit">per kilogram</div></div>
+<div class="price-card"><div class="icon">✨</div><div class="kind">Premium rice</div><div class="amount">₱58.00</div><div class="unit">per kilogram</div></div>
+<div class="price-card"><div class="icon">⭐</div><div class="kind">Special rice</div><div class="amount">₱65.00</div><div class="unit">per kilogram</div></div>
+</div>
+<div class="notice"><b>Reminder:</b> These are illustrative sample estimates, not verified current market prices or official Department of Agriculture data.</div>
+</section>
+<section class="panel">
+<h2>Tap a location</h2><p class="sub">You can also choose a municipality using these buttons.</p>
+<div class="locations" id="location-buttons">
+<button class="loc-btn active" onclick="chooseLocation('Tarlac City')">Tarlac City</button>
+<button class="loc-btn" onclick="chooseLocation('Anao')">Anao</button><button class="loc-btn" onclick="chooseLocation('Bamban')">Bamban</button>
+<button class="loc-btn" onclick="chooseLocation('Camiling')">Camiling</button><button class="loc-btn" onclick="chooseLocation('Capas')">Capas</button>
+<button class="loc-btn" onclick="chooseLocation('Concepcion')">Concepcion</button><button class="loc-btn" onclick="chooseLocation('Gerona')">Gerona</button>
+<button class="loc-btn" onclick="chooseLocation('La Paz')">La Paz</button><button class="loc-btn" onclick="chooseLocation('Mayantoc')">Mayantoc</button>
+<button class="loc-btn" onclick="chooseLocation('Moncada')">Moncada</button><button class="loc-btn" onclick="chooseLocation('Paniqui')">Paniqui</button>
+<button class="loc-btn" onclick="chooseLocation('Pura')">Pura</button><button class="loc-btn" onclick="chooseLocation('Ramos')">Ramos</button>
+<button class="loc-btn" onclick="chooseLocation('San Clemente')">San Clemente</button><button class="loc-btn" onclick="chooseLocation('San Jose')">San Jose</button>
+<button class="loc-btn" onclick="chooseLocation('San Manuel')">San Manuel</button><button class="loc-btn" onclick="chooseLocation('Santa Ignacia')">Santa Ignacia</button>
+<button class="loc-btn" onclick="chooseLocation('Victoria')">Victoria</button>
+</div>
+</section>
+<section class="panel">
+<h2>Compare all locations</h2><p class="sub">Search for a municipality to view its sample prices.</p>
+<input class="search" id="search" type="search" placeholder="Search municipality..." oninput="renderTable()">
+<div class="table-scroll"><table><thead><tr><th>Location</th><th>Regular</th><th>Well-milled</th><th>Premium</th></tr></thead><tbody id="table-body"></tbody></table></div>
+</section>
+</main>
+<footer><div class="wrap"><b>🌾 TARLAC RICE WATCH</b><br>Independent informational project · Sample estimates only · Not an official government price bulletin</div></footer>
+<script>
+var ricePrices = {
+"Tarlac City":{regular:45,well:52,premium:58,special:65},
+"Anao":{regular:44,well:50,premium:56,special:63},
+"Bamban":{regular:46,well:53,premium:59,special:66},
+"Camiling":{regular:43,well:50,premium:57,special:64},
+"Capas":{regular:45,well:51,premium:58,special:64},
+"Concepcion":{regular:44,well:52,premium:57,special:65},
+"Gerona":{regular:45,well:53,premium:60,special:67},
+"La Paz":{regular:46,well:52,premium:59,special:66},
+"Mayantoc":{regular:47,well:54,premium:61,special:68},
+"Moncada":{regular:43,well:51,premium:56,special:63},
+"Paniqui":{regular:44,well:52,premium:59,special:66},
+"Pura":{regular:45,well:51,premium:57,special:64},
+"Ramos":{regular:43,well:50,premium:56,special:62},
+"San Clemente":{regular:46,well:53,premium:60,special:67},
+"San Jose":{regular:47,well:54,premium:62,special:69},
+"San Manuel":{regular:44,well:51,premium:58,special:65},
+"Santa Ignacia":{regular:45,well:52,premium:60,special:67},
+"Victoria":{regular:44,well:53,premium:59,special:66}
+};
+function peso(n){return "₱"+Number(n).toFixed(2);}
+function updatePrices(){
+ var name=document.getElementById("municipality").value;
+ var p=ricePrices[name];
+ if(!p){return;}
+ document.getElementById("place-name").textContent=name;
+ var cards=[
+  ["🌾","Regular-milled rice",p.regular],
+  ["🍚","Well-milled rice",p.well],
+  ["✨","Premium rice",p.premium],
+  ["⭐","Special rice",p.special]
+ ];
+ document.getElementById("price-cards").innerHTML=cards.map(function(c){
+  return '<div class="price-card"><div class="icon">'+c[0]+'</div><div class="kind">'+c[1]+'</div><div class="amount">'+peso(c[2])+'</div><div class="unit">per kilogram</div></div>';
+ }).join("");
+ var buttons=document.querySelectorAll(".loc-btn");
+ buttons.forEach(function(b){b.classList.toggle("active",b.textContent.trim()===name);});
+}
+function chooseLocation(name){
+ document.getElementById("municipality").value=name;
+ updatePrices();
+ document.getElementById("rice-prices").scrollIntoView({behavior:"smooth",block:"start"});
+}
+function renderTable(){
+ var query=document.getElementById("search").value.toLowerCase().trim();
+ var names=Object.keys(ricePrices).filter(function(n){return n.toLowerCase().indexOf(query)!==-1;});
+ document.getElementById("table-body").innerHTML=names.map(function(n){
+ var p=ricePrices[n];
+ return "<tr><td><b>"+n+"</b></td><td>"+peso(p.regular)+"</td><td>"+peso(p.well)+"</td><td>"+peso(p.premium)+"</td></tr>";
+ }).join("") || '<tr><td colspan="4">No location found.</td></tr>';
+}
+renderTable();
+</script>
+</body>
+</html>
